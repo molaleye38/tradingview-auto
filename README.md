@@ -8,7 +8,7 @@ This project logs in to TradingView, scrapes bullish/bearish screeners for stock
    - Stocks (Weekdays 16:10 WAT): 
      Command:
      node -e "import('./main.js').then(m => m.runAutomation({type:'stock'}))"
-     Schedule (UTC): 10 15 * * 1-5
+     Schedule (UTC): 16 15 * * 1-5
    - Crypto (Daily 23:00 WAT):
      Command:
      node -e "import('./main.js').then(m => m.runAutomation({type:'crypto'}))"
