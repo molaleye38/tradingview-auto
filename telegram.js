@@ -1,17 +1,30 @@
-import { Telegraf } from "telegraf";
-import 'dotenv/config';
+import fetch from "node-fetch";
 
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+export async function sendTelegramMessage(text) {
+  const token = process.env.TELEGRAM_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
 
-export async function sendToTelegram(text) {
-  if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
-    console.log("⚠️ Telegram token or chat id missing. Skipping send.");
-    return;
-  }
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  const body = {
+    chat_id: chatId,
+    text: text,
+    parse_mode: "HTML",
+  };
+
   try {
-    await bot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, text, { parse_mode: "Markdown" });
-    console.log("✅ Message sent to Telegram.");
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const data = await res.text();
+      console.error("Telegram error:", data);
+    } else {
+      console.log("✅ Telegram message sent");
+    }
   } catch (err) {
-    console.error("❌ Failed to send Telegram message:", err.message);
+    console.error("❌ Telegram send failed:", err.message);
   }
 }
