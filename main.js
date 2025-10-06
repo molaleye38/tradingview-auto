@@ -1,46 +1,48 @@
-import 'dotenv/config';
-import { scrapeScreener } from "./scraper.js";
+// main.js
 import { sendTelegramMessage } from "./telegram.js";
 
+// ✅ This function simulates scraping TradingView (replace later with Puppeteer)
+async function scrapeTradingViewData() {
+  // Example test data — once the Telegram works, we’ll replace with real scraped data
+  const stocks = [
+    { ticker: "AAPL", change: "+12.5%", volume: "15.2M", rvol: "2.3", float: "9.7M" },
+    { ticker: "TSLA", change: "+9.1%", volume: "18.5M", rvol: "2.1", float: "8.4M" },
+  ];
 
-export async function runAutomation({ type }) {
-  const now = new Date();
-  console.log(`\n🚀 Running ${type.toUpperCase()} automation at ${now.toISOString()}`);
+  const cryptos = [
+    { ticker: "BTCUSDT", change: "+3.5%", volume: "42.3B", rvol: "1.8", price: "68200" },
+    { ticker: "ETHUSDT", change: "+2.2%", volume: "22.7B", rvol: "1.6", price: "3550" },
+  ];
 
-  try {
-    let bull = [], bear = [];
-
-    if (type === "stock") {
-      bull = await scrapeScreener(process.env.STOCK_BULLISH_URL, "stock");
-      bear = await scrapeScreener(process.env.STOCK_BEARISH_URL, "stock");
-    } else if (type === "crypto") {
-      bull = await scrapeScreener(process.env.CRYPTO_BULLISH_URL, "crypto");
-      bear = await scrapeScreener(process.env.CRYPTO_BEARISH_URL, "crypto");
-    }
-
-    const formatList = (title, arr) => {
-      if (!arr || arr.length === 0) return `\n*${title}*\n_No results_`;
-      return `\n*${title}*\n` + arr.map(i =>
-        `• ${i.symbol} — Vol: ${i.volume || "N/A"} | RVOL: ${i.rvol || "N/A"} ${i.float ? `| Float: ${i.float}` : ""} | ${i.priceChangePercent || ""} | ${i.price || ""}`
-      ).join("\n");
-    };
-
-    const message = `
-📊 *${type.toUpperCase()} Screener — ${now.toISOString().slice(0,10)}*
-${formatList("BULLISH", bull)}
-${formatList("BEARISH", bear)}
-`;
-
-    await sendToTelegram(message);
-    console.log(`✅ ${type.toUpperCase()} automation finished.`);
-  } catch (err) {
-    console.error("❌ Error in runAutomation:", err);
+  // Format Telegram message
+  let message = "📊 <b>DAILY MARKET UPDATE</b>\n\n";
+  message += "📈 <b>STOCKS</b>\n";
+  for (const s of stocks) {
+    message += `${s.ticker} — ${s.change} | Vol: ${s.volume} | RVOL: ${s.rvol} | Float: ${s.float}\n`;
   }
+
+  message += "\n💎 <b>CRYPTO</b>\n";
+  for (const c of cryptos) {
+    message += `${c.ticker} — ${c.change} | Vol: ${c.volume} | RVOL: ${c.rvol} | Price: ${c.price}\n`;
+  }
+
+  return message;
 }
 
-if (process.argv.some(a => a.startsWith("--test"))) {
-  const arg = process.argv.find(a => a.startsWith("--test"));
-  const t = arg.split("=")[1] || "crypto";
-  runAutomation({ type: t });
+async function main() {
+  console.log("🚀 Starting daily TradingView automation...");
+
+  // 1️⃣ Scrape or mock the data
+  const message = await scrapeTradingViewData();
+
+  // 2️⃣ Send to Telegram
+  await sendTelegramMessage(message);
+
+  console.log("✅ Workflow complete");
 }
-fix: corrected telegram function import name
+
+// Run the script
+main().catch((err) => {
+  console.error("❌ Error in main:", err);
+  process.exit(1);
+});
