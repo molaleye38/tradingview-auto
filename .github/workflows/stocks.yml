@@ -1,13 +1,14 @@
-name: 📈 Stocks Screener
+name: 📈 Stocks Screener Automation
 
 on:
   schedule:
-    - cron: "0 */6 * * *" # Runs every 6 hours
-  workflow_dispatch: # allows manual run
+    - cron: "0 22 * * 1-5" # Runs at 10:00 PM WAT, Monday–Friday
+  workflow_dispatch: # Allow manual runs
 
 jobs:
   run-stocks:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
