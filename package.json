@@ -1,16 +1,9 @@
 {
   "name": "tradingview-auto",
   "version": "1.0.0",
-  "main": "main.js",
   "type": "module",
-  "scripts": {
-    "postinstall": "npx playwright install --with-deps",
-    "test": "node main.js --test=crypto"
-  },
+  "main": "main.js",
   "dependencies": {
-    "dotenv": "^16.4.1",
-    "playwright": "^1.48.2",
-    "telegraf": "^4.12.2",
-    "node-cron": "^3.0.2"
+    "node-fetch": "^3.3.2"
   }
 }
