@@ -1,10 +1,17 @@
+// telegram.js
 import fetch from "node-fetch";
 
 export async function sendTelegramMessage(text) {
   const token = process.env.TELEGRAM_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
+  if (!token || !chatId) {
+    console.error("❌ Missing TELEGRAM_TOKEN or TELEGRAM_CHAT_ID in environment variables.");
+    process.exit(1);
+  }
+
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
   const body = {
     chat_id: chatId,
     text: text,
@@ -20,11 +27,11 @@ export async function sendTelegramMessage(text) {
 
     if (!res.ok) {
       const data = await res.text();
-      console.error("Telegram error:", data);
+      console.error("❌ Telegram API error:", data);
     } else {
-      console.log("✅ Telegram message sent");
+      console.log("✅ Telegram message sent successfully!");
     }
   } catch (err) {
-    console.error("❌ Telegram send failed:", err.message);
+    console.error("❌ Failed to send Telegram message:", err.message);
   }
 }
