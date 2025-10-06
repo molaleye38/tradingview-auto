@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { scrapeScreener } from "./scraper.js";
-import { sendToTelegram } from "./telegram.js";
+import { sendTelegramMessage } from "./telegram.js";
+
 
 export async function runAutomation({ type }) {
   const now = new Date();
@@ -42,3 +43,4 @@ if (process.argv.some(a => a.startsWith("--test"))) {
   const t = arg.split("=")[1] || "crypto";
   runAutomation({ type: t });
 }
+fix: corrected telegram function import name
