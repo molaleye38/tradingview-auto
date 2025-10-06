@@ -1,0 +1,29 @@
+name: Stocks Scraper
+on:
+  schedule:
+    - cron: '10 15 * * 1-5'  # 16:10 WAT (Mon-Fri)
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Stocks Scraper
+        run: node main.js
+        env:
+          TRADINGVIEW_USER: ${{ secrets.TRADINGVIEW_USER }}
+          TRADINGVIEW_PASS: ${{ secrets.TRADINGVIEW_PASS }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          STOCK_URL: ${{ secrets.STOCK_URL }}
